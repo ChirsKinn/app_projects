@@ -1,98 +1,229 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Alert,
+  useWindowDimensions,
+} from "react-native";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import * as ScreenOrientation from "expo-screen-orientation";
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
+const questionBank = [
+  {
+    question: "Canberra is the capital of Australia.",
+    answer: true,
+  },
+  {
+    question: "The Pacific Ocean is smaller than the Atlantic Ocean.",
+    answer: false,
+  },
+  {
+    question: "Mount Everest is the tallest mountain above sea level.",
+    answer: true,
+  },
+  {
+    question: "Brazil is located in Europe.",
+    answer: false,
+  },
+  {
+    question: "The Nile River is in Africa.",
+    answer: true,
+  },
+];
+
+export default function QuizScreen() {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+
+  const question = questionBank[currentQuestion];
+
+  useEffect(() => {
+    ScreenOrientation.unlockAsync();
+  }, []);
+
+  const nextQuestion = () => {
+    setCurrentQuestion(
+      (currentQuestion + 1) % questionBank.length
     );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+  };
+
+  const previousQuestion = () => {
+    setCurrentQuestion(
+      (currentQuestion - 1 + questionBank.length) %
+        questionBank.length
+    );
+  };
+
+  const checkAnswer = (selectedAnswer: boolean) => {
+    if (selectedAnswer === question.answer) {
+      Alert.alert("Correct!", "Nice job!", [
+        {
+          text: "Continue",
+          onPress: nextQuestion,
+        },
+      ]);
+    } else {
+      Alert.alert("Incorrect", "Try again!");
+    }
+  };
+
+  const openCheatScreen = () => {
+    router.push({
+      pathname: "/cheat",
+      params: {
+        answer: question.answer.toString(),
+      },
+    });
+  };
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <View
+      style={[
+        styles.container,
+        isLandscape && styles.landscapeContainer,
+      ]}
+    >
+      <Text style={styles.question}>
+        {question.question}
+      </Text>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+      <View
+        style={[
+          styles.answerRow,
+          isLandscape && styles.landscapeRow,
+        ]}
+      >
+        <Pressable
+          style={styles.button}
+          onPress={() => checkAnswer(true)}
+        >
+          <Text style={styles.buttonText}>
+            TRUE
+          </Text>
+        </Pressable>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+        <Pressable
+          style={styles.button}
+          onPress={() => checkAnswer(false)}
+        >
+          <Text style={styles.buttonText}>
+            FALSE
+          </Text>
+        </Pressable>
+      </View>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+      <View
+        style={[
+          styles.navigationRow,
+          isLandscape && styles.landscapeRow,
+        ]}
+      >
+        <Pressable
+          style={styles.navButton}
+          onPress={previousQuestion}
+        >
+          <Ionicons
+            name="chevron-back"
+            size={24}
+            color="white"
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+          <Text style={styles.buttonText}>
+            PREV
+          </Text>
+        </Pressable>
+
+        <Pressable
+          style={styles.navButton}
+          onPress={nextQuestion}
+        >
+          <Text style={styles.buttonText}>
+            NEXT
+          </Text>
+
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color="white"
+          />
+        </Pressable>
+      </View>
+
+      <Pressable onPress={openCheatScreen}>
+        <Text style={styles.cheatText}>
+          CHEAT
+        </Text>
+      </Pressable>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: "#F5F5F5",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+
+  landscapeContainer: {
+    paddingHorizontal: 120,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+
+  question: {
+    fontSize: 24,
+    textAlign: "center",
+    marginBottom: 40,
   },
-  title: {
-    textAlign: 'center',
+
+  answerRow: {
+    flexDirection: "row",
+    gap: 80,
+    marginBottom: 45,
   },
-  code: {
-    textTransform: 'uppercase',
+
+  navigationRow: {
+    flexDirection: "row",
+    gap: 70,
+    marginBottom: 40,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+
+  landscapeRow: {
+    width: "65%",
+    justifyContent: "space-between",
+  },
+
+  button: {
+    backgroundColor: "#6C5CE7",
+    paddingVertical: 16,
+    paddingHorizontal: 30,
+    borderRadius: 6,
+  },
+
+  navButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#6C5CE7",
+    paddingVertical: 14,
+    paddingHorizontal: 22,
+    borderRadius: 6,
+  },
+
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+
+  cheatText: {
+    color: "#6C5CE7",
+    fontSize: 24,
   },
 });
