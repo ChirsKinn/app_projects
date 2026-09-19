@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "PriceFinder",
+    "slug": "pricefinder",
+    "scheme": "pricefinder",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": [
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "PriceFinder uses your location to show your position and distances to demo stores."
+        }
+      ],
+      "expo-web-browser",
+      "expo-status-bar"
+    ],
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

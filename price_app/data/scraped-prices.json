@@ -1,0 +1,42 @@
+[
+  {
+    "productId": "monster-12",
+    "retailer": "Walmart",
+    "storeId": "walmart-st-george-demo",
+    "productName": "Monster Energy, Original, Energy Drink, 12 Pack - 16 Fl Oz",
+    "price": 21.58,
+    "inStock": true,
+    "url": "https://www.walmart.com/ip/Monster-Energy-Original-Energy-Drink-12-count-16-fl-oz/581272641",
+    "updatedAt": "2026-09-19T21:57:54.999Z"
+  },
+  {
+    "productId": "coke-12",
+    "retailer": "Walmart",
+    "storeId": "walmart-st-george-demo",
+    "productName": "Coca-Cola Soda Pop Fridge Pack Cans, 12 fl oz, 12 Pack",
+    "price": 7.68,
+    "inStock": true,
+    "url": "https://www.walmart.com/ip/Coca-Cola-Classic-Coke-12-ct-144-fl-oz/12166733",
+    "updatedAt": "2026-09-19T21:57:56.533Z"
+  },
+  {
+    "productId": "monster-12",
+    "retailer": "Target",
+    "storeId": "target-st-george-demo",
+    "productName": "Monster Energy Original - 12pk/16 fl oz Cans: Caffeinated, Herb Flavor",
+    "price": 23.99,
+    "inStock": null,
+    "url": "https://www.target.com/p/monster-energy-original-12pk-16-fl-oz-cans/-/A-81782413",
+    "updatedAt": "2026-09-19T21:58:07.960Z"
+  },
+  {
+    "productId": "coke-12",
+    "retailer": "Target",
+    "storeId": "target-st-george-demo",
+    "productName": "Coca-Cola Soda - 12pk/12 fl oz Cans",
+    "price": 8.89,
+    "inStock": null,
+    "url": "https://www.target.com/p/-/A-12953464",
+    "updatedAt": "2026-09-19T21:58:14.697Z"
+  }
+]
